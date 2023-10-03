@@ -9,27 +9,19 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { OSNotification } from "react-native-onesignal";
 import { useNavigation } from "@react-navigation/native";
+import * as Linking from "expo-linking";
 
 type Props = {
   data: OSNotification;
   onClose: () => void;
 };
 
-type AdditionalDataProps = {
-  route?: "datails";
-  product_id?: string;
-};
-
 export function Notification({ data, onClose }: Props) {
-  const navigation = useNavigation();
   function handleOnPress() {
-    const { product_id, route } = data.additionalData as AdditionalDataProps;
-    if (route === "datails" && product_id) {
-      navigation.navigate("details", {
-        productId: product_id,
-      });
+    if (data.launchURL) {
+      Linking.openURL(data.launchURL);
+      onClose();
     }
-    onClose();
   }
   return (
     <Pressable
